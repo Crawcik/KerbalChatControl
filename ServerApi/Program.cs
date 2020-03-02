@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.IO;
 using System;
-using System.Text;
 using System.Collections.Generic;
 
 namespace WebApi
@@ -37,20 +36,22 @@ namespace WebApi
                             if (keys.ContainsKey("channelId") && keys.ContainsKey("token") && keys.ContainsKey("type"))
                             {
                                 List<Message> msgs= new List<Message>();
-                                if (keys["type"] == "youtube")
+                                List<char> platforms_key = new List<char>(keys["type"].ToCharArray());
+                                string[] channelIdAll = keys["channelId"].Split(new string[] { ":BREAK:" }, StringSplitOptions.RemoveEmptyEntries);
+                                if (platforms_key.Contains('y'))
                                 {
+                                    int index = platforms_key.IndexOf('y');
                                     string liveChatId;
-                                    youtube.TryGetLiveChatId(out liveChatId, keys["channelId"]);
+                                    youtube.TryGetLiveChatId(out liveChatId, channelIdAll[index]);
                                     Message[] messages_yt;
                                     youtube.TryGetChatMessages(liveChatId, out messages_yt);
                                     msgs.AddRange(messages_yt);
                                 }
 
-                                string data = Newtonsoft.Json.JsonConvert.SerializeObject(msgs.ToArray());
-                                Stream x = responce.OutputStream;
-                                byte[] buffer = Encoding.UTF8.GetBytes(data);
-                                x.Write(buffer, 0, buffer.Length);
-                                x.Close();
+                                string data = string.Join(":BREAK:", msgs);
+                                StreamWriter writer = new StreamWriter(responce.OutputStream);
+                                writer.Write(data);
+                                writer.Close();
                             } else responce.StatusCode = 400;
                         }
                         catch { responce.StatusCode = 400;}

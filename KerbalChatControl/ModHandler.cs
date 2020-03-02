@@ -3,7 +3,6 @@
 using UnityEngine;
 using KSP.UI.Screens;
 using KSP.IO;
-using Newtonsoft.Json;
 
 
 namespace ChatController
@@ -68,7 +67,6 @@ namespace ChatController
             if (!isModOn)
                 return;
             print("Kerbal Chat Control is ON!");
-            ChatHandler.SetYTChat();
         }
 
         public static void PrintMessage(string v)
