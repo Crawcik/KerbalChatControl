@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ChatController
+﻿namespace ChatController
 {
-    class TestStart
+    public class TestStart
     {
         static void Main()
         {
-            ChatHandler.SetYTChat();
+            ChatHandler.Add(Platform.Youtube, "UCvbk1Z676ajHgSnYdryCKbw");
+            string[] read_messages = ChatHandler.ReadChats();
         }
     }
 }

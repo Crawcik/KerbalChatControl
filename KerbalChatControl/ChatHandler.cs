@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace ChatController
 {
 
-    static class ChatHandler
+    static class ChatHandler : IDisposable
     {
-        private static bool YoutubeOn = false;
+        public static bool YoutubeOn { private set; get; }  = false;
         private static string YoutubeId;
-
-        private static string[] old_messages;
+        private static readonly string MyToken = RandomToken(64);
+        private static List<Message> old_messages = new List<Message>();
 
         public static void Add(Platform platform, string channelId)
         {
@@ -23,7 +24,7 @@ namespace ChatController
             }
         }
 
-        public static string[] ReadChats()
+        public static Message[] ReadChats()
         {
             string platform_keys = "";
             string channelIdAll = "";
@@ -31,14 +32,17 @@ namespace ChatController
                 platform_keys += "y";
                 channelIdAll += ":BREAK:" + YoutubeId; 
             }
-            return GetMessages(channelIdAll, platform_keys);
+            List<Message> messages = GetMessages(channelIdAll, platform_keys);
+            messages.RemoveAll(now => old_messages.Exists(old=>old.id == now.id));
+            old_messages = messages;
+            return messages.ToArray();
         }
-        public static string[] GetMessages(string channelId, string platforms)
+        public static List<Message> GetMessages(string channelId, string platforms)
         {
             string result;
             try
             {
-                WebRequest request = WebRequest.Create($"http://crawcik.space:8080/ksp/?channel={channelId}&api=TEST2&type=youtube");
+                WebRequest request = WebRequest.Create($"http://localhost:8080/ksp/?channel={channelId}&token={MyToken}&type=y");
                 request.Method = "GET";
                 request.ContentType = "x-www-form-urlencoded";
                 using (WebResponse response = request.GetResponse())
@@ -48,13 +52,17 @@ namespace ChatController
                     reader.Close();
                 }
             }
-            catch
+            catch (Exception e) 
             {
+                string m = e.Message;
                 return null;
             }
             try
             {
-                return result.Split(new string[] { ":BREAK:" },StringSplitOptions.RemoveEmptyEntries);
+                List<Message> messages = new List<Message>();
+                foreach (string message_data in result.Split(new string[] { ":BREAK:" }, StringSplitOptions.RemoveEmptyEntries))
+                    messages.Add(Message.Prase(message_data));
+                return messages
             }
             catch
             {
@@ -83,6 +91,22 @@ namespace ChatController
             }
         }
 
+        private static string RandomToken(byte length)
+        {
+            const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789";
+            string random_values = null;
+            Random random = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                random_values += glyphs[random.Next(0, glyphs.Length)];
+            }
+            return random_values;
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public enum Platform

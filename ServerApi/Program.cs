@@ -13,7 +13,7 @@ namespace WebApi
         {
             Initialize();
             HttpListener httpListener = new HttpListener();
-            httpListener.Prefixes.Add("http://locahost:8080/");
+            httpListener.Prefixes.Add("http://localhost:8080/");
             httpListener.Start();
             while (true)
             {
@@ -33,11 +33,11 @@ namespace WebApi
                                 string[] arg = parameter.Split('=');
                                 keys.Add(arg[0], arg[1]);
                             }
-                            if (keys.ContainsKey("channelId") && keys.ContainsKey("token") && keys.ContainsKey("type"))
+                            if (keys.ContainsKey("channel") && keys.ContainsKey("token") && keys.ContainsKey("type"))
                             {
                                 List<Message> msgs= new List<Message>();
                                 List<char> platforms_key = new List<char>(keys["type"].ToCharArray());
-                                string[] channelIdAll = keys["channelId"].Split(new string[] { ":BREAK:" }, StringSplitOptions.RemoveEmptyEntries);
+                                string[] channelIdAll = keys["channel"].Split(new string[] { ":BREAK:" }, StringSplitOptions.RemoveEmptyEntries);
                                 if (platforms_key.Contains('y'))
                                 {
                                     int index = platforms_key.IndexOf('y');
@@ -47,7 +47,6 @@ namespace WebApi
                                     youtube.TryGetChatMessages(liveChatId, out messages_yt);
                                     msgs.AddRange(messages_yt);
                                 }
-
                                 string data = string.Join(":BREAK:", msgs);
                                 StreamWriter writer = new StreamWriter(responce.OutputStream);
                                 writer.Write(data);

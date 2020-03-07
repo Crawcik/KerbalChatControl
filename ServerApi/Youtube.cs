@@ -115,11 +115,14 @@ namespace WebApi
 
         public async Task KeepKeyAlive()
         {
+            Console.WriteLine("KeepAliveOn");
             while (true)
             {
                 await Task.Delay((this.token.ExpiresIn - 5) * 1000);
                 if (TryRefreshToken())
                     Console.WriteLine("Token refreshed");
+                else
+                    Console.WriteLine("Token refresh failed!");
             }
         }
 
