@@ -20,7 +20,6 @@ namespace WebApi
                 var context = httpListener.GetContext();
                 var request = context.Request;
                 var responce = context.Response;
-                Console.WriteLine("Called: "+ request.RawUrl);
                 if (request.HttpMethod == "GET")
                 {
                     if (request.ContentType == "x-www-form-urlencoded")

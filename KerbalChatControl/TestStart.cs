@@ -1,11 +1,19 @@
-﻿namespace ChatController
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ChatController
 {
-    public class TestStart
+    class TestStart
     {
-        static void Main()
+        static void Main(string[] args)
         {
             ChatHandler.Add(Platform.Youtube, "UCvbk1Z676ajHgSnYdryCKbw");
-            string[] read_messages = ChatHandler.ReadChats();
+            Message[] msgs = ChatHandler.ReadChats();
+            Message[] msgs2 = ChatHandler.ReadChats();
         }
     }
 }

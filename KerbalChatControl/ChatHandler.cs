@@ -6,11 +6,11 @@ using System.Net;
 namespace ChatController
 {
 
-    static class ChatHandler : IDisposable
+    static class ChatHandler
     {
         public static bool YoutubeOn { private set; get; }  = false;
         private static string YoutubeId;
-        private static readonly string MyToken = RandomToken(64);
+        private static readonly string MyToken = RandomToken(16);
         private static List<Message> old_messages = new List<Message>();
 
         public static void Add(Platform platform, string channelId)
@@ -62,7 +62,7 @@ namespace ChatController
                 List<Message> messages = new List<Message>();
                 foreach (string message_data in result.Split(new string[] { ":BREAK:" }, StringSplitOptions.RemoveEmptyEntries))
                     messages.Add(Message.Prase(message_data));
-                return messages
+                return messages;
             }
             catch
             {
@@ -103,7 +103,7 @@ namespace ChatController
             return random_values;
         }
 
-        public void Dispose()
+        public static void Dispose()
         {
             throw new NotImplementedException();
         }
