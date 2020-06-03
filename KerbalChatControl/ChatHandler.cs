@@ -10,6 +10,8 @@ namespace ChatController
     {
         public static bool YoutubeOn { private set; get; }  = false;
         private static string YoutubeId;
+        public static bool DiscordOn { private set; get; } = false;
+        private static ulong DiscordId;
         private static readonly string MyToken = RandomToken(16);
         private static List<Message> old_messages = new List<Message>();
 
@@ -21,6 +23,9 @@ namespace ChatController
                     YoutubeOn = CheckConnection("https://www.youtube.com/channel/" + channelId);
                     YoutubeId = channelId;
                     break;
+                case Platform.Discord:
+                    YoutubeOn = ulong.TryParse(channelId, out DiscordId);
+                    break;
             }
         }
 
@@ -31,6 +36,11 @@ namespace ChatController
             if (YoutubeOn) {
                 platform_keys += "y";
                 channelIdAll += ":BREAK:" + YoutubeId; 
+            }
+            if (DiscordOn)
+            {
+                platform_keys += "d";
+                channelIdAll += ":BREAK:" + DiscordId.ToString();
             }
             List<Message> messages = GetMessages(channelIdAll, platform_keys);
             messages.RemoveAll(now => old_messages.Exists(old=>old.id == now.id));
@@ -111,6 +121,7 @@ namespace ChatController
 
     public enum Platform
     {
-        Youtube = 0
+        Youtube,
+        Discord
     }
 }

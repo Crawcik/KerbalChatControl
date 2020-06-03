@@ -8,6 +8,7 @@ namespace WebApi
     class Program
     {
         static Youtube youtube;
+        static Discord discord;
         static Dictionary<string,string> config = GetConfig(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/kspwebapi/config.txt");
         static void Main(string[] args)
         {
@@ -44,6 +45,13 @@ namespace WebApi
                                     youtube.TryGetLiveChatId(out liveChatId, channelIdAll[index]);
                                     Message[] messages_yt;
                                     youtube.TryGetChatMessages(liveChatId, out messages_yt);
+                                    msgs.AddRange(messages_yt);
+                                }
+                                if (platforms_key.Contains('d'))
+                                {
+                                    int index = platforms_key.IndexOf('d');
+                                    Message[] messages_yt;
+                                    discord.TryGetChatMessages(ulong.Parse(channelIdAll[index]), out messages_yt);
                                     msgs.AddRange(messages_yt);
                                 }
                                 string data = string.Join(":BREAK:", msgs);
