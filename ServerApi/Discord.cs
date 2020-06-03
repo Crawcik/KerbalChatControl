@@ -10,13 +10,13 @@ namespace WebApi
 {
     public class Discord
     {
+        public string token;
         private DiscordClient Client { get; set; }
-        public Discord() => RunBotAsync().GetAwaiter();
         public async Task RunBotAsync()
         {
             var cfg = new DiscordConfiguration
             {
-                Token = "NzE3NjYwNjEwNTI3MjMyMDYx.XtdjjQ.05G_J-YVG14BgOhy--ueSVBmANs",
+                Token = token,
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,

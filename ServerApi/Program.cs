@@ -92,7 +92,11 @@ namespace WebApi
                     Console.WriteLine("Failed Youtube");
                 }
             }
-
+            if (config["discord_On"] == "true")
+            {
+                discord.token = config["discord_Token"];
+                discord.RunBotAsync().GetAwaiter();
+            }
         }
 
         static Dictionary<string, string> GetConfig(string path)
